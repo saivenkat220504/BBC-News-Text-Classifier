@@ -1,29 +1,31 @@
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from peft import PeftModel
 import torch
 import json
 import os
 
-MODEL_PATH = "bbc_model"
+BASE_MODEL = "distilbert-base-uncased"   # or your base model used in training
+ADAPTER_PATH = "bbc_model"
 
-# Load model and tokenizer (cached for efficiency)
 @st.cache_resource
 def load_model():
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
-    model = AutoModelForSequenceClassification.from_pretrained(
-        MODEL_PATH,
+    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+    base_model = AutoModelForSequenceClassification.from_pretrained(
+        BASE_MODEL,
         num_labels=5,
         ignore_mismatched_sizes=True
     )
-    # Load label mapping
-    id2label_path = os.path.join(MODEL_PATH, "id2label.json")
+    model = PeftModel.from_pretrained(base_model, ADAPTER_PATH)
+
+    id2label_path = os.path.join(ADAPTER_PATH, "id2label.json")
     if os.path.exists(id2label_path):
         with open(id2label_path, "r") as f:
             id2label = json.load(f)
         labels = [id2label[str(i)] for i in range(len(id2label))]
     else:
-        # fallback if no file exists
         labels = ["business", "entertainment", "sport", "tech", "politics"]
+
     return tokenizer, model, labels
 
 tokenizer, model, labels = load_model()
