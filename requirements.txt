@@ -4,3 +4,5 @@ transformers
 peft
 sentencepiece
 huggingface_hub
+fastapi
+uvicorn

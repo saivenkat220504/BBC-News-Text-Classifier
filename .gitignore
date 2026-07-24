@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Node modules & build files
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.vite/
+frontend/.vite/
+
+# IDEs & System files
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Python cache & bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Streamlit config (optional)
+.streamlit/
